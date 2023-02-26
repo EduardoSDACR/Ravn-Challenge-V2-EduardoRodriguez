@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  lastname  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role_id   Int
+  role      Role     @relation(fields: [role_id], references: [id])
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  users       User[]
+
+  @@map("roles")
+}
+
+model Product {
+  id             Int             @id @default(autoincrement())
+  name           String
+  description    String
+  price          Decimal         @db.Decimal(5, 2)
+  image_url      String
+  likes          Int             @default(0)
+  stock          Int
+  is_disabled    Boolean         @default(false)
+  category_id    Int
+  category       Category        @relation(fields: [category_id], references: [id])
+  order_products Order_Product[]
+
+  @@map("products")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  Product     Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  id             Int             @id @default(autoincrement())
+  date           DateTime        @db.Date
+  time           DateTime        @db.Time
+  total_cost     Decimal         @db.Decimal(8, 2)
+  user_id        Int
+  user           User            @relation(fields: [user_id], references: [id])
+  order_products Order_Product[]
+
+  @@map("orders")
+}
+
+model Order_Product {
+  id         Int     @id @default(autoincrement())
+  order_id   Int
+  order      Order   @relation(fields: [order_id], references: [id])
+  product_id Int
+  product    Product @relation(fields: [product_id], references: [id])
+
+  @@map("order_products")
+}

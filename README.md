@@ -1,6 +1,6 @@
 ## Description
 
-This is an API Rest develop to give services for a web store about cubes
+This is an development API Rest to provide services for a web store about cubes
 
 ## Installation
 
@@ -21,6 +21,13 @@ $ npm run db:rm
 $ npm run db:restart
 ```
 
+## Don't forget to run migrations with prisma
+
+```bash
+# Running migrations
+$ npx prisma migrate dev
+```
+
 ## Running the app
 
 ```bash
@@ -32,13 +39,6 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Don't forget to run migrations with prisma
-
-```bash
-# Running migrations
-$ npx prisma migrate dev
 ```
 
 Nest is [MIT licensed](LICENSE).

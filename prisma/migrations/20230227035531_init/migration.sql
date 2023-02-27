@@ -1,12 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "User";
-
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -14,8 +5,6 @@ CREATE TABLE "users" (
     "lastname" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "role_id" INTEGER NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
@@ -57,8 +46,7 @@ CREATE TABLE "categories" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
-    "date" DATE NOT NULL,
-    "time" TIME NOT NULL,
+    "buy_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "total_cost" DECIMAL(8,2) NOT NULL,
     "user_id" INTEGER NOT NULL,
 
@@ -66,16 +54,19 @@ CREATE TABLE "orders" (
 );
 
 -- CreateTable
-CREATE TABLE "order_products" (
-    "id" SERIAL NOT NULL,
-    "order_id" INTEGER NOT NULL,
-    "product_id" INTEGER NOT NULL,
-
-    CONSTRAINT "order_products_pkey" PRIMARY KEY ("id")
+CREATE TABLE "_OrderToProduct" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_OrderToProduct_AB_unique" ON "_OrderToProduct"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_OrderToProduct_B_index" ON "_OrderToProduct"("B");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -87,7 +78,10 @@ ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_products" ADD CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_OrderToProduct" ADD CONSTRAINT "_OrderToProduct_A_fkey" FOREIGN KEY ("A") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_products" ADD CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_OrderToProduct" ADD CONSTRAINT "_OrderToProduct_B_fkey" FOREIGN KEY ("B") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO roles VALUES (1, 'Client', 'Can purchase the products available');
+INSERT INTO roles VALUES (2, 'Manager', 'Can manage most of the app');

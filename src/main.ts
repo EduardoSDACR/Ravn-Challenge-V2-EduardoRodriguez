@@ -17,7 +17,6 @@ async function bootstrap() {
     .setTitle('Cube Store API')
     .setDescription('Cube Store API description')
     .setVersion('1.0')
-    .addTag('cubes')
     .build();
   const document = SwaggerModule.createDocument(
     app,

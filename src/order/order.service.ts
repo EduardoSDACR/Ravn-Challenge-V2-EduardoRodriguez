@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CartDto, CreateOrderDto } from 'src/dto';
+import { CartDto, CreateOrderDto } from 'src/order/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductService } from 'src/product/product.service';
 
@@ -74,6 +74,7 @@ export class OrderService {
         id: { in: dto.cart },
       },
       select: {
+        id: true,
         price: true,
       },
     });
@@ -81,8 +82,8 @@ export class OrderService {
     cart.forEach((product) => {
       total_price = total_price + +product.price;
     });
-    const products_ids = dto.cart.map((id) => {
-      return { id: id };
+    const products_ids = cart.map((product) => {
+      return { id: product.id };
     });
     return this.prisma.order.create({
       data: {

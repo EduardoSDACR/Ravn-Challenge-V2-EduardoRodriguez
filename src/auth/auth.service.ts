@@ -30,7 +30,11 @@ export class AuthService {
         },
       });
 
-      return this.signToken(user.id, user.email);
+      return this.signToken(
+        user.id,
+        user.email,
+        user.role_id,
+      );
     } catch (error) {
       if (
         error instanceof
@@ -68,16 +72,22 @@ export class AuthService {
         'Credentials are incorrect',
       );
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(
+      user.id,
+      user.email,
+      user.role_id,
+    );
   }
 
   async signToken(
     userId: number,
     email: string,
+    role_id: number,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
       email,
+      role_id,
     };
     const secret = this.config.get('JWT_SECRET');
     const token = await this.jwt.signAsync(payload, {

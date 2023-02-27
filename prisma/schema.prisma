@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  name     String
-  lastname String
-  email    String  @unique
-  password String
-  role_id  Int
-  role     Role    @relation(fields: [role_id], references: [id])
-  orders   Order[]
+  id             Int       @id @default(autoincrement())
+  name           String
+  lastname       String
+  email          String    @unique
+  password       String
+  role_id        Int
+  role           Role      @relation(fields: [role_id], references: [id])
+  orders         Order[]
+  products_liked Product[]
 
   @@map("users")
 }
@@ -44,6 +45,7 @@ model Product {
   category_id Int
   category    Category @relation(fields: [category_id], references: [id])
   orders      Order[]
+  users_like  User[]
 
   @@map("products")
 }

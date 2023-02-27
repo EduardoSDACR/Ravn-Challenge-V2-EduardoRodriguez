@@ -7,6 +7,7 @@ import { ProductModule } from './product/product.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { OrderModule } from './order/order.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { OrderModule } from './order/order.module';
     PrismaModule,
     ProductModule,
     OrderModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}

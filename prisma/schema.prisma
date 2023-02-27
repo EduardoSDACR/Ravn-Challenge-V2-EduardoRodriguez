@@ -11,16 +11,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lastname  String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role_id   Int
-  role      Role     @relation(fields: [role_id], references: [id])
-  orders    Order[]
+  id       Int     @id @default(autoincrement())
+  name     String
+  lastname String
+  email    String  @unique
+  password String
+  role_id  Int
+  role     Role    @relation(fields: [role_id], references: [id])
+  orders   Order[]
 
   @@map("users")
 }
@@ -35,17 +33,17 @@ model Role {
 }
 
 model Product {
-  id             Int             @id @default(autoincrement())
-  name           String
-  description    String
-  price          Decimal         @db.Decimal(5, 2)
-  image_url      String
-  likes          Int             @default(0)
-  stock          Int
-  is_disabled    Boolean         @default(false)
-  category_id    Int
-  category       Category        @relation(fields: [category_id], references: [id])
-  order_products Order_Product[]
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Decimal  @db.Decimal(5, 2)
+  image_url   String
+  likes       Int      @default(0)
+  stock       Int
+  is_disabled Boolean  @default(false)
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [id])
+  orders      Order[]
 
   @@map("products")
 }
@@ -60,23 +58,12 @@ model Category {
 }
 
 model Order {
-  id             Int             @id @default(autoincrement())
-  date           DateTime        @db.Date
-  time           DateTime        @db.Time
-  total_cost     Decimal         @db.Decimal(8, 2)
-  user_id        Int
-  user           User            @relation(fields: [user_id], references: [id])
-  order_products Order_Product[]
+  id         Int       @id @default(autoincrement())
+  buy_date   DateTime  @default(now())
+  total_cost Decimal   @db.Decimal(8, 2)
+  user_id    Int
+  user       User      @relation(fields: [user_id], references: [id])
+  products   Product[]
 
   @@map("orders")
-}
-
-model Order_Product {
-  id         Int     @id @default(autoincrement())
-  order_id   Int
-  order      Order   @relation(fields: [order_id], references: [id])
-  product_id Int
-  product    Product @relation(fields: [product_id], references: [id])
-
-  @@map("order_products")
 }

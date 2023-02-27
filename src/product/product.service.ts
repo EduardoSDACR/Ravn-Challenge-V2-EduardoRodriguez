@@ -6,6 +6,7 @@ import {
 import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { Prisma } from '@prisma/client/';
 
 @Injectable()
 export class ProductService {
@@ -77,13 +78,25 @@ export class ProductService {
   async createProduct(dto: CreateProductDto, file) {
     const imagePath = join('/images/', file.filename);
 
-    const product = await this.prisma.product.create({
-      data: {
-        ...dto,
-        image_url: imagePath,
-      },
-    });
-    return product;
+    try {
+      const product = await this.prisma.product.create({
+        data: {
+          ...dto,
+          image_url: imagePath,
+        },
+      });
+      return product;
+    } catch (error) {
+      if (
+        error instanceof
+        Prisma.PrismaClientKnownRequestError
+      ) {
+        if (error.code === 'P2003') {
+          throw new NotFoundException('Category not found');
+        }
+      }
+      throw error;
+    }
   }
 
   async updateProductById(
